@@ -53,4 +53,19 @@ class TestDiff < Test::Unit::TestCase
     assert_equal 'foobar', diffs[4].b_path
     assert                 diffs[4].new_file
   end
+
+  def test_list_from_string_cjk
+    output = fixture('diff_cjk')
+
+    diffs = Grit::Diff.list_from_string(@r, output)
+    chinese_file_name = "中文.txt"
+    bin_chinese_file_name = "\344\270\255\346\226\207.txt"
+
+    assert_equal 1,                     diffs.size
+
+    assert_equal Encoding::ASCII_8BIT,  diffs[0].b_path.encoding
+    assert_equal Encoding::UTF_8,       diffs[0].new_path.encoding
+    assert_equal bin_chinese_file_name, diffs[0].b_path
+    assert_equal chinese_file_name,     diffs[0].new_path
+  end
 end
