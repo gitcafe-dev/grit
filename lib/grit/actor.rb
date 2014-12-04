@@ -18,7 +18,7 @@ module Grit
     def self.from_string(str)
       case str
         when /<.+>/
-          m, name, email = *str.match(/(.*) <(.+?)>/)
+          m, name, email = *str.match(/(?:(.*)\s{1})?<(.+?)>/)
           return self.new(name, email)
         else
           return self.new(str, nil)
