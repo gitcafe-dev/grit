@@ -5,8 +5,8 @@ module Grit
     attr_reader :email
 
     def initialize(name, email)
-      @name = name
-      @email = email
+      @name  = name.blank? ? "Unkown" : name.strip
+      @email = email.blank? ? "Unkown" : email.strip
     end
     alias_method :to_s, :name
 
@@ -17,9 +17,8 @@ module Grit
     # Returns Git::Actor.
     def self.from_string(str)
       case str
-        when /<.+>/
-          m, name, email = *str.match(/(?:(.*)\s{1})?<(.+?)>/)
-          return self.new(name, email)
+        when /(.*)<(.*?)>\s*$/
+          return self.new($1, $2)
         else
           return self.new(str, nil)
       end
