@@ -89,7 +89,8 @@ module Grit
     #   # => #<Grit::Blob "8b1e02c0fb554eed2ce2ef737a68bb369d7527df">
     #
     # Returns Grit::Blob or Grit::Tree or nil if not found
-    def /(file)
+    def /(para_file)
+      file = para_file.clone
       if file.force_encoding("BINARY") =~ /\//
         file.split("/").inject(self) { |acc, x| acc/x } rescue nil
       else
