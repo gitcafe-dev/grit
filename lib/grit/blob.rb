@@ -1,7 +1,7 @@
 module Grit
 
   class Blob
-    DEFAULT_MIME_TYPE = "text/plain"
+    DEFAULT_MIME_TYPE = "application/octet-stream"
 
     attr_reader :id
     attr_reader :mode
