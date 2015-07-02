@@ -232,7 +232,7 @@ module Grit
     def raw_content
       # TODO: sort correctly
       #@entry.sort { |a,b| a.name <=> b.name }.
-      @entry.collect { |e| [[e.format_mode, e.format_type, e.sha1].join(' '), e.safe_name].join("\t")}.join("\n")
+      @entry.collect { |e| [[e.format_mode, e.format_type, e.sha1].join(' '), e.origin_name].join("\t") }.join("\n")
     end
 
     def actual_raw
