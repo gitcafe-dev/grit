@@ -65,12 +65,12 @@ module Grit
     #
     # Returns Grit::Blob or Grit::Tree
     def content_from_string(repo, text)
-      mode, type, id, name = text.split(/ |\t/, 4)
+      mode, type, id, name, origin_name = text.split(/ |\t/, 5)
       case type
         when "tree"
           Tree.create(repo, :id => id, :mode => mode, :name => name)
         when "blob"
-          Blob.create(repo, :id => id, :mode => mode, :name => name)
+          Blob.create(repo, :id => id, :mode => mode, :name => name, :origin_name => origin_name)
         when "link"
           Blob.create(repo, :id => id, :mode => mode, :name => name)
         when "commit"
@@ -94,7 +94,9 @@ module Grit
       if file.force_encoding("BINARY") =~ /\//
         file.split("/").inject(self) { |acc, x| acc/x } rescue nil
       else
-        self.contents.find { |c| c.name == file }
+        blob_to_return = self.contents.find { |c| c.name == file }
+        blob_to_return ||= self.contents.find { |c| c.origin_name == file }
+        return blob_to_return
       end
     end
 
