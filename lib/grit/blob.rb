@@ -6,6 +6,7 @@ module Grit
     attr_reader :id
     attr_reader :mode
     attr_reader :name
+    attr_reader :origin_name
 
     # Create an unbaked Blob containing just the specified attributes
     #   +repo+ is the Repo
