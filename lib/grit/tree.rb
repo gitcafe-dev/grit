@@ -94,7 +94,13 @@ module Grit
       if file.force_encoding("BINARY") =~ /\//
         file.split("/").inject(self) { |acc, x| acc/x } rescue nil
       else
-        self.contents.find { |c| c.name == file or c.origin_name == file }
+        self.contents.find do |c|
+          if c.instance_of? Grit::Blob
+            c.name == file or c.origin_name == file
+          else
+            c.name == file
+          end
+        end
       end
     end
 
