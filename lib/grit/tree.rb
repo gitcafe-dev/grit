@@ -7,6 +7,7 @@ module Grit
     attr_reader :id
     attr_reader :mode
     attr_reader :name
+    attr_reader :origin_name
 
     # Construct the contents of the tree
     #   +repo+ is the Repo
@@ -68,13 +69,13 @@ module Grit
       mode, type, id, name, origin_name = text.split(/ |\t/, 5)
       case type
         when "tree"
-          Tree.create(repo, :id => id, :mode => mode, :name => name)
+          Tree.create(repo, :id => id, :mode => mode, :name => name, :origin_name => origin_name)
         when "blob"
           Blob.create(repo, :id => id, :mode => mode, :name => name, :origin_name => origin_name)
         when "link"
-          Blob.create(repo, :id => id, :mode => mode, :name => name)
+          Blob.create(repo, :id => id, :mode => mode, :name => name, :origin_name => origin_name)
         when "commit"
-          Submodule.create(repo, :id => id, :mode => mode, :name => name)
+          Submodule.create(repo, :id => id, :mode => mode, :name => name, :origin_name => origin_name)
         else
           raise Grit::InvalidObjectType, type
       end
@@ -94,13 +95,7 @@ module Grit
       if file.force_encoding("BINARY") =~ /\//
         file.split("/").inject(self) { |acc, x| acc/x } rescue nil
       else
-        self.contents.find do |c|
-          if c.instance_of? Grit::Blob
-            c.name == file or c.origin_name == file
-          else
-            c.name == file
-          end
-        end
+        self.contents.find { |c| c.origin_name == file }
       end
     end
 
