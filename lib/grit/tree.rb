@@ -75,7 +75,7 @@ module Grit
         when "link"
           Blob.create(repo, :id => id, :mode => mode, :name => name, :origin_name => origin_name)
         when "commit"
-          Submodule.create(repo, :id => id, :mode => mode, :name => name, :origin_name => origin_name)
+          Submodule.create(repo, :id => id, :mode => mode, :name => name)
         else
           raise Grit::InvalidObjectType, type
       end
@@ -95,7 +95,13 @@ module Grit
       if file.force_encoding("BINARY") =~ /\//
         file.split("/").inject(self) { |acc, x| acc/x } rescue nil
       else
-        self.contents.find { |c| c.origin_name == file }
+        self.contents.find do |content|
+          if content.instance_of? Grit::Submodule
+            content.name == file
+          else
+            content.origin_name == file
+          end
+        end
       end
     end
 
