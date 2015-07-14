@@ -66,7 +66,8 @@ module Grit
     #
     # Returns Grit::Blob or Grit::Tree
     def content_from_string(repo, text)
-      mode, type, id, name, origin_name = text.split(/ |\t/, 5)
+      format_value, name, origin_name = text.split(/\t/, 3)
+      mode, type, id = format_value.split(/ /, 3)
       origin_name = String.class_eval(origin_name)
       case type
         when "tree"
