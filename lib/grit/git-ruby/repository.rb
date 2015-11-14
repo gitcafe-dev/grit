@@ -333,8 +333,11 @@ module Grit
         if (sha)
           o = get_raw_object_by_sha1(sha)
           if o.type == :tag
-            commit_sha = get_object_by_sha1(sha).object
-            c = get_object_by_sha1(commit_sha)
+            c = loop do
+              sha = get_object_by_sha1(sha).object
+              deref = get_object_by_sha1(sha)
+              break deref unless deref.type == :tag
+            end
           else
             c = GitObject.from_raw(o)
           end
